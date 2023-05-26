@@ -20,13 +20,16 @@ jobs:
           java-version: '11'
           distribution: 'adopt'
 
-      - name: Run Checkstyle
+      - name: Run Checkstyle XML report
         run: mvn checkstyle:checkstyle
+
+      - name: Run Checkstyle HTML report
+        run: mvn checkstyle:checkstyle-aggregate
 
       - name: Find Checkstyle reports
         id: find-reports
         run: |
-          echo "::set-output name=reports-directory::$(find . -type d -name 'checkstyle')"
+          echo "::set-output name=reports-directory::$(find . -type d \( -name 'checkstyle' -o -name 'checkstyle-aggregate' \))"
 
       - name: Archive Checkstyle reports
         uses: actions/upload-artifact@v2
