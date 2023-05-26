@@ -23,9 +23,13 @@ jobs:
       - name: Run Checkstyle
         run: mvn checkstyle:checkstyle
 
+      - name: Find Checkstyle reports
+        id: find-reports
+        run: |
+          echo "::set-output name=reports-directory::$(find . -type d -name 'checkstyle')"
+
       - name: Archive Checkstyle reports
         uses: actions/upload-artifact@v2
         with:
           name: checkstyle-reports
-          path: target/site/checkstyle
-
+          path: ${{ steps.find-reports.outputs.reports-directory }}
