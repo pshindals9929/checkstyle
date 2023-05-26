@@ -20,9 +20,6 @@ jobs:
           java-version: '11'
           distribution: 'adopt'
 
-      - name: Run Checkstyle XML report
-        run: mvn checkstyle:checkstyle
-
       - name: Run Checkstyle HTML report
         run: mvn checkstyle:checkstyle-aggregate
 
@@ -30,5 +27,39 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: checkstyle-reports
-          path: |
-            target/site
+          path: target/site
+          
+      - name: Check for Checkstyle errors
+        id: checkstyle-errors
+        run: |
+          severity_errors=$(grep -c "Severity: error" target/site/checkstyle-aggregate.html)
+          if [[ $severity_errors -gt 0 ]]; then
+            echo "::set-output name=has_errors::true"
+          else
+            echo "::set-output name=has_errors::false"
+          fi
+
+      - name: Update Check run
+        uses: actions/github-script@v4
+        if: ${{ steps.checkstyle-errors.outputs.has_errors == 'true' }}
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const { context } = require('@actions/github');
+
+            const octokit = context.octokit;
+            const { owner, repo } = context.repo;
+            const sha = context.sha;
+
+            octokit.checks.create({
+              owner,
+              repo,
+              name: 'Checkstyle',
+              head_sha: sha,
+              status: 'completed',
+              conclusion: 'failure',
+              output: {
+                title: 'Checkstyle Report',
+                summary: 'Checkstyle found errors in the code.',
+              },
+            });
