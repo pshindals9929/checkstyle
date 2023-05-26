@@ -37,6 +37,15 @@ public class DocumentationTest {
         return result;
     }
     
+    public boolean test4(boolean arg1, boolean arg2) {
+        boolean result = arg1 && arg2;        
+        return result;
+    }
+    public boolean test3(boolean arg1, boolean arg2) {
+        boolean result = arg1 && arg2;
+        return result;
+    }
+    
     public static void main(String[] args) {
         DocumentationTest test = new DocumentationTest();
         
