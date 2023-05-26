@@ -31,8 +31,4 @@ jobs:
         with:
           name: checkstyle-reports
           path: |
-            target/site/checkstyle/checkstyle.xml
-            target/site/checkstyle-aggregate.html
-            target/site/css
-            target/site/images
-            target/site/images/logo
+            target/site
