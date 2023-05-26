@@ -22,3 +22,10 @@ jobs:
 
       - name: Run Checkstyle
         run: mvn checkstyle:checkstyle
+
+      - name: Archive Checkstyle reports
+        uses: actions/upload-artifact@v2
+        with:
+          name: checkstyle-reports
+          path: target/site/checkstyle
+
